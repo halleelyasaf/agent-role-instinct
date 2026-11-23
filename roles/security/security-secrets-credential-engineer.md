@@ -137,7 +137,7 @@ jobs:
 
 ```bash
 # BEFORE: a long-lived static DB password in an env var — one leak = full, permanent access.
-# DATABASE_URL=postgres://app:sup3rs3cret@db.internal:5432/app   # never rotated, everywhere
+# DATABASE_URL=postgres://app:sup3rs3cret@db.internal:5432/app   # never rotated, everywhere # notsecret
 
 # AFTER: Vault issues a database credential that lives 15 minutes and is auto-revoked.
 vault write database/roles/app \
