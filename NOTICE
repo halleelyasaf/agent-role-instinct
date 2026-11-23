@@ -1,0 +1,14 @@
+Agency roles for Instinct
+
+Original role content: https://github.com/msitarzewski/agency-agents
+Copyright (c) 2025 AgentLand Contributors
+Licensed under the MIT License; the full original notice is in LICENSE.
+
+This adaptation preserves the complete upstream role bodies and adds an
+Instinct-specific interpretation before each body. It replaces host-specific
+frontmatter with portable role metadata and supplies a role router, division
+indexes, a catalog with source hashes, transfer instructions, and local build
+scripts. The source revision and per-file provenance are in catalog.json.
+
+Instinct is the product of its respective owner. This is an independent role
+library, not an official Instinct integration or an upstream Agency Agents release.
