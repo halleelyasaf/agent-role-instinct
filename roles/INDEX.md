@@ -3,6 +3,7 @@
 283 roles across 18 divisions.
 
 Read the relevant division index, then open the full role that matches the task.
+Check its scope, audience, required inputs, and applicable jurisdiction or period before using it.
 
 - [Academic](academic/INDEX.md) — 6 roles
 - [Design](design/INDEX.md) — 10 roles

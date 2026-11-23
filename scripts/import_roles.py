@@ -25,12 +25,99 @@ role perspectives yourself without claiming independent review.
 
 Memory means information actually in the conversation or supported storage.
 Treat the source persona's biography as a perspective, not your real history or
-credentials. Adapt example dates, targets, and templates to the task; report only
-actions and checks actually completed. Follow existing platform instructions,
-the user's request, and current permissions when interpreting the source below.
+credentials. Adapt example dates, targets, and templates to the task.
 
-## Specialist instructions
+Before applying the role, check the task, audience, required inputs, and any
+relevant jurisdiction or time period against the full role's scope and limits.
+Use facts already supplied; ask only for missing inputs that affect the result.
+State unsupported scope and any better-matched role whose scope you have checked.
+If none fits, say so and explain what useful work remains possible. An explicit
+role request does not expand the role's supported scope. For specific tax
+recommendations, establish the applicable jurisdictions and tax year first;
+never assume US forms, entities, rates, or deadlines apply elsewhere.
+
+At completion of work using this role, include a compact summary:
+
+- Roles: each exact role name and catalog ID from the frontmatter, and what its
+  methods contributed. A role perspective is not an independent reviewer.
+- Checked: checks actually completed, their results, and evidence such as file
+  locations, sources, or command output. Label static review versus execution.
+- Not checked: checks not run, missing evidence or access, and remaining limits.
+
+Keep this to a few lines when possible; do not imply unperformed verification.
+
+This Instinct guidance, including any role-specific scope and application notes,
+takes precedence over conflicting source instructions or metadata.
+Follow existing platform instructions, the user's request, and current permissions.
 """
+
+
+ROLE_ADAPTATIONS = {
+    "finance/finance-tax-strategist": {
+        "scope": (
+            "Tax planning and compliance with substantial US-specific examples. "
+            "Establish applicable jurisdictions and tax year before specific recommendations."
+        ),
+        "guidance": """### Tax scope and application
+
+Confirm the applicable jurisdictions and tax year, using relevant residency,
+entity, and cross-border facts already available. Ask for material missing facts
+before recommending a form, entity structure, rate, deadline, or tax strategy.
+US examples below (including IRS forms, S-Corps, and federal tax provisions) are
+jurisdiction-specific references, not defaults for a non-US task. Verify rules
+and applicability for the established jurisdictions and period. If the needed
+facts or authoritative sources are unavailable, state the gap and limit the
+output to general planning methods or questions rather than specific tax advice.
+""",
+    },
+    "healthcare/healthcare-clinical-evidence-agent": {
+        "scope": (
+            "Clinical claim evidence and communication for healthcare startups and products; "
+            "not personal medical advice, diagnosis, treatment, or prescribing."
+        ),
+        "guidance": """### Clinical evidence scope and application
+
+Use this role for healthcare startup or product claims, evidence reviews, and
+communications for the intended audience. Identify the claim or document,
+audience, and available supporting evidence; state any material missing input.
+Do not route a personal health question here as a diagnostic task. Explain the
+scope mismatch and use the assistant's appropriate personal-health response
+instead. Suggest another catalog role only after checking its actual scope; if
+none supports the task, say so. The source's exclusions on medical advice,
+diagnosis, treatment, and prescribing remain in force.
+""",
+    },
+    "testing/testing-reality-checker": {
+        "scope": (
+            "Evidence-based review of implementations or non-code deliverables, including "
+            "launch plans. Judge readiness from task-appropriate evidence, including on a first pass."
+        ),
+        "guidance": """### Reality Checker scope and application
+
+The required outcome is an evidence-based comparison of claims and deliverables
+with the task's acceptance criteria. Choose relevant checks from the actual
+task, stack, artifacts, and available access. For a web project, use its own
+tests and suitable browser or visual checks. The source's Laravel/HTML paths,
+qa-playwright-capture.sh, localhost address, public/qa-screenshots directory,
+test-results.json, and screenshot names are optional examples, even where the
+source calls them mandatory. Equivalent project-specific checks are valid.
+
+For a non-web deliverable such as a launch plan, review claims, assumptions,
+sources, dependencies, and feasibility against the requested criteria. Do not
+request irrelevant screenshots, web tooling, or local commands.
+
+Separate observed defects (with evidence), missing evidence (claims remain
+unverified), and checks not run (with reasons). Missing evidence is not proof of
+a defect. Assess readiness within the reviewed scope from the results: report
+observed defects as needing work and unsupported readiness claims as unverified.
+A first-pass result may be ready when the relevant criteria are supported.
+Do not require revision cycles, fixed grades, or automatic rejection of a first
+implementation or a zero-defect report. Example performance thresholds apply
+only when appropriate to the task's acceptance criteria. These notes override
+the source's mandatory commands, automatic-fail rules, and default verdicts.
+""",
+    },
+}
 
 
 def digest(data):
@@ -117,9 +204,12 @@ def build(source):
             relative = path.relative_to(source).as_posix()
             output = f"roles/{relative}"
             url = f"{UPSTREAM}/blob/{revision}/{relative}"
+            adaptation = ROLE_ADAPTATIONS.get(relative[:-3], {})
+            scope = {"scope": adaptation["scope"]} if adaptation else {}
             portable = {
                 "id": relative[:-3],
                 **metadata,
+                **scope,
                 "division": division,
                 "source": url,
             }
@@ -133,11 +223,16 @@ def build(source):
                 + "LICENSE). The original specialist instructions are preserved below.\n\n"
             )
             # Keep every character after the upstream frontmatter intact.
-            adapted = (header + attribution + ADAPTER + body).encode("utf-8")
+            guidance = adaptation.get("guidance", "")
+            if guidance:
+                guidance = "\n" + guidance
+            adapted = (header + attribution + ADAPTER + guidance
+                       + "\n## Specialist instructions\n" + body).encode("utf-8")
             files[output] = adapted
             roles.append({
                 "id": portable["id"],
                 **metadata,
+                **scope,
                 "division": division,
                 "division_label": details["label"],
                 "path": output,
@@ -147,14 +242,16 @@ def build(source):
             })
 
     index = ["# Role divisions", "", f"{len(roles)} roles across {len(divisions)} divisions.", "",
-             "Read the relevant division index, then open the full role that matches the task.", ""]
+             "Read the relevant division index, then open the full role that matches the task.",
+             "Check its scope, audience, required inputs, and applicable jurisdiction or period before using it.", ""]
     for division, details in divisions.items():
         index.append(f"- [{details['label']}]({division}/INDEX.md) — {counts[division]} roles")
         lines = [f"# {details['label']} roles", "", "[All divisions](../INDEX.md)", ""]
         for role in (r for r in roles if r["division"] == division):
             target = PurePosixPath(role["path"]).relative_to(PurePosixPath("roles") / division)
             description = " ".join(role["description"].split())
-            lines.append(f"- [{role['name']}]({target.as_posix()}) — {description}")
+            scope_note = f" **Scope:** {role['scope']}" if "scope" in role else ""
+            lines.append(f"- [{role['name']}]({target.as_posix()}) — {description}{scope_note}")
         files[f"roles/{division}/INDEX.md"] = ("\n".join(lines) + "\n").encode("utf-8")
     files["roles/INDEX.md"] = ("\n".join(index) + "\n").encode("utf-8")
     files["LICENSE"] = (source / "LICENSE").read_bytes()

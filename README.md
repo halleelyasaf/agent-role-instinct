@@ -15,12 +15,34 @@ Example requests after loading the library:
 
 - [SKILL.md](SKILL.md): a small entry point for assistants that support Markdown skills.
 - [Role index](roles/INDEX.md): divisions, role descriptions, and links to every role.
-- [catalog.json](catalog.json): the full machine-readable catalog, pinned upstream revision, source links, and integrity hashes.
+- [catalog.json](catalog.json): the full machine-readable catalog, pinned upstream revision, source links, integrity hashes, and role-specific scope notes where present.
 - `roles/`: every original role's full instructions, examples, and workflows, with an Instinct adaptation at the top.
 
 Instinct chooses the relevant role rather than loading the whole library into every conversation. Each role keeps its specialist knowledge while using Instinct's chat style and the apps, browser, files, or other tools actually available to it. Role-specific tool lists do not grant tools or account access. Memory and completed actions must reflect what Instinct has actually stored or done.
 
+Selection includes a scope check against the task, audience, required inputs, and relevant jurisdiction or time period. Tax Strategist requires applicable jurisdictions and a tax year before specific recommendations; US examples are not defaults for other countries. Clinical Evidence Agent supports healthcare startup and product claims rather than personal medical advice or diagnosis. Reality Checker can review code or a launch plan using task-appropriate evidence; its preserved web commands are examples, and first-pass work is judged on results.
+
 These are portable Markdown instructions. There is no claim of a verified native importer or installation path for the hosted Instinct product. A role can also be used by giving Instinct the individual Markdown file. This project is independent of Instinct and the upstream Agency Agents project.
+
+## Completion examples
+
+Every task using the library ends with a short summary of the exact roles and their contributions, checks completed with evidence, and checks not completed or remaining limits. These hypothetical examples illustrate the format; they do not report tests run on this library. Applying two role perspectives does not constitute independent review.
+
+Single-role launch-plan review using supplied documents:
+
+> **Roles:** Reality Checker (`testing/testing-reality-checker`) — compared launch claims, owners, and dependencies with the plan's acceptance criteria.
+>
+> **Checked (static review):** Compared the milestone and owner lists in the supplied `launch-plan.md`; the launch milestone has no assigned owner (Milestones, item 4).
+>
+> **Not checked:** Customer demand and budget claims remain unverified because supporting evidence was not supplied. No commands, browser checks, or live launch-system tests were run.
+
+Multi-role web change in a project with executable tests:
+
+> **Roles:** Frontend Developer (`engineering/engineering-frontend-developer`) — implemented form validation; Reality Checker (`testing/testing-reality-checker`) — compared form behavior with the project's acceptance criteria.
+>
+> **Checked (execution):** The project's `npm test` passed (`test-output.txt`); a browser check confirmed empty submissions show the required-field message (`form-check.webm`).
+>
+> **Not checked:** Cross-browser compatibility and production deployment were not tested; readiness is limited to the tested environment and behaviors.
 
 ## Create a transferable ZIP
 
@@ -40,7 +62,7 @@ python3 scripts/import_roles.py /tmp/agency-agents
 python3 scripts/import_roles.py /tmp/agency-agents --check
 ```
 
-The importer recursively reads every division in upstream `divisions.json`, including nested game-development roles. It preserves the source bodies, converts role metadata, adds Instinct guidance, and regenerates the indexes and catalog. It records the exact commit and hashes. It refuses to overwrite local changes to previously generated files; edit the importer to make lasting changes to the adapter. Review upstream changes before using the refreshed library.
+The importer recursively reads every division in upstream `divisions.json`, including nested game-development roles. It preserves the source bodies, converts role metadata, adds Instinct guidance, and regenerates the indexes and catalog. It records the exact commit and hashes. It refuses to overwrite local changes to previously generated files; edit `ADAPTER` or `ROLE_ADAPTATIONS` in the importer to make lasting changes to the shared guidance or role-specific scope and application notes. Those notes control interpretation of conflicting preserved instructions. Review upstream changes before using the refreshed library.
 
 `--check` verifies completeness and exact generated content without changing files. The importer reads a local checkout and does not execute upstream scripts. Upstream role bodies and code examples are preserved as reference material; they have not all been executed or independently validated.
 
