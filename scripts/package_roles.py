@@ -6,6 +6,7 @@ import hashlib
 import json
 from pathlib import Path
 import zipfile
+from validate_extensions import validate_extensions
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -13,6 +14,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def package(destination):
     catalog = json.loads((ROOT / "catalog.json").read_text())
+    extensions = validate_extensions(ROOT, catalog)
     # Reject incomplete or edited imports before producing a transferable artifact.
     for name, expected in catalog["generated_files"].items():
         actual = hashlib.sha256((ROOT / name).read_bytes()).hexdigest()
@@ -21,6 +23,8 @@ def package(destination):
     names = {"README.md", "INSTINCT.md", "SKILL.md", "LICENSE", "NOTICE", "catalog.json"}
     names.update(role["path"] for role in catalog["roles"])
     names.update(name for name in catalog["generated_files"] if name.endswith("/INDEX.md"))
+    names.update({"extensions/manifest.json", "extensions/INDEX.md"})
+    names.update(e["path"] for e in extensions["extensions"])
     destination.parent.mkdir(parents=True, exist_ok=True)
     with zipfile.ZipFile(destination, "w", zipfile.ZIP_DEFLATED) as archive:
         for name in sorted(names):
@@ -28,7 +32,7 @@ def package(destination):
             info.compress_type = zipfile.ZIP_DEFLATED
             info.external_attr = 0o100644 << 16
             archive.writestr(info, (ROOT / name).read_bytes())
-    print(f"Packaged {catalog['role_count']} roles in {destination}")
+    print(f"Packaged {catalog['role_count']} upstream roles + {len(extensions['extensions'])} original extension(s) in {destination}")
 
 
 def main():

@@ -7,6 +7,7 @@ import json
 from pathlib import Path, PurePosixPath
 import re
 import subprocess
+from validate_extensions import validate_extensions
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -306,12 +307,13 @@ def main():
     args = parser.parse_args()
     try:
         files, catalog = build(args.source.resolve())
+        extensions = validate_extensions(ROOT, catalog)
         reconcile(ROOT, files, check=args.check)
     except (OSError, ValueError, subprocess.CalledProcessError) as exc:
         parser.exit(1, f"error: {exc}\n")
     verb = "Verified" if args.check else "Imported"
     print(f"{verb} {catalog['role_count']} roles across {len(catalog['divisions'])} divisions "
-          f"from {catalog['upstream']['commit']}")
+          f"from {catalog['upstream']['commit']}; {len(extensions['extensions'])} original extension(s) validated")
 
 
 if __name__ == "__main__":

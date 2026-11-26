@@ -46,3 +46,7 @@ See [README.md](README.md#completion-examples) for single-role and multi-role ex
 Role files retain their upstream directory structure under `roles/`. Nested divisions, including game engines, are included. The catalog records the source repository, pinned commit, original file hash, preserved body hash, and adapted file hash for every role. The original MIT notice is in [LICENSE](LICENSE).
 
 For transferring this library through chat, read [INSTINCT.md](INSTINCT.md).
+
+## Original extension methods
+
+For fresh per-task specialist selection and contribution-response tracking, read [Task Role Coordinator](extensions/task-role-coordinator.md), listed in the [original extension index](extensions/INDEX.md). This is separate from the 283 upstream catalog roles: standalone guidance, not real-task-tested or website-enforced. Read it before applying it.
