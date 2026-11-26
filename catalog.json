@@ -3716,7 +3716,7 @@
         "sha256": "356c73f5feb867b3e0d3c58d463a98f5f1b241709ff9dc9e64a5bd6d91457484"
       },
       "body_sha256": "95c0d3e7fcd0dbe3fb24cbff8cc73eba83c85839494afcc611f041e5de41d111",
-      "sha256": "d0fc1ade1dc17bf49d7add860c3aec9a6d382ef49109be936ccd6236c68ad53f"
+      "sha256": "481028a470db3b0300cfc971a63b0965e43d5c840f7e3d68cd43350e435a744c"
     },
     {
       "id": "security/security-senior-secops",
@@ -5430,7 +5430,7 @@
     "roles/security/security-compliance-auditor.md": "8e87e47f760b34483b0369b38838a903002e4d4a72e1d8467b05d7626707fd8e",
     "roles/security/security-incident-responder.md": "c43b12cb9b76374a09a02fe61786cee3f0e2ff9f7cbf8bedb2e4489aae597c3d",
     "roles/security/security-penetration-tester.md": "3ca2ec5e3b1b83103b79dea282c021ba3d964e9d3cbf5310a05742a7e9f7361d",
-    "roles/security/security-secrets-credential-engineer.md": "d0fc1ade1dc17bf49d7add860c3aec9a6d382ef49109be936ccd6236c68ad53f",
+    "roles/security/security-secrets-credential-engineer.md": "481028a470db3b0300cfc971a63b0965e43d5c840f7e3d68cd43350e435a744c",
     "roles/security/security-senior-secops.md": "c0089d16d80fa1f252cc0fbd35a0bd64fc2d81083846289ea566d9936a5938d2",
     "roles/security/security-threat-detection-engineer.md": "c15d41b5b2e1b86a68ceb13fdd38160ce523ec0802767ef65904fd5d007bd3bb",
     "roles/security/security-threat-intelligence-analyst.md": "c73c119a04decaff2cf002f185a3319dcab1767b85c5dc526931fb5368cdbca0",
