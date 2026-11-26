@@ -24,6 +24,10 @@ Selection includes a scope check against the task, audience, required inputs, an
 
 These are portable Markdown instructions. There is no claim of a verified native importer or installation path for the hosted Instinct product. A role can also be used by giving Instinct the individual Markdown file. This project is independent of Instinct and the upstream Agency Agents project.
 
+## Original extensions
+
+In addition to the 283 upstream-adapted roles, this library includes **1 original extension**: [Task Role Coordinator](extensions/task-role-coordinator.md). It selects roles afresh per task and tracks focused recommendations and responses. See the [separate extension index](extensions/INDEX.md) and [manifest](extensions/manifest.json). It is standalone guidance, not tested on a real task or enforced by a website. It is not part of catalog.json; website integration is a separate change. Original extensions are preserved during upstream regeneration and included separately in the ZIP.
+
 ## Completion examples
 
 Every task using the library ends with a short summary of the exact roles and their contributions, checks completed with evidence, and checks not completed or remaining limits. These hypothetical examples illustrate the format; they do not report tests run on this library. Applying two role perspectives does not constitute independent review.
@@ -69,3 +73,7 @@ The importer recursively reads every division in upstream `divisions.json`, incl
 ## Attribution
 
 Adapted from [msitarzewski/agency-agents](https://github.com/msitarzewski/agency-agents). Original role content is distributed under the [MIT license](LICENSE), including its original copyright notice. See [NOTICE](NOTICE) for the adaptation details and `catalog.json` for the pinned source revision.
+
+## Testing original extensions
+
+Run `python -m unittest discover -s tests -v`. For regeneration and package tests, set `AGENCY_SOURCE` to a clean checkout at the commit recorded in catalog.json. The test fixture normalizes a pre-existing upstream-role hash mismatch only inside a disposable copy. In the repository baseline, `roles/security/security-secrets-credential-engineer.md` has an extra `notsecret` annotation that does not match its catalog hash. Consequently full-repository import checking and packaging currently fail on that file. This extension change preserves that file and catalog.json unchanged; it does not bypass the check or silently repair the mismatch.
